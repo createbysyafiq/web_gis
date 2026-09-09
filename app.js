@@ -1,6 +1,27 @@
 let map, titikLayer, ruteLayer;
 
-// 1. Fungsi Transisi Tombol Home -> Peta
+async function loadGeoJSON(filename) {
+    const possiblePaths = [
+        `./assets/data/${filename}`,
+        `assets/data/${filename}`,
+        `./${filename}`,
+        `${filename}`
+    ];
+
+    for (const path of possiblePaths) {
+        try {
+            const response = await fetch(path);
+            if (response.ok) {
+                console.log(`Berhasil memuat ${filename} dari: ${path}`);
+                return await response.json();
+            }
+        } catch (err) {
+            // Coba path berikutnya
+        }
+    }
+    throw new Error(`File ${filename} tidak ditemukan di jalur manapun.`);
+}
+
 function submitForm() {
     const origin = document.getElementById('select-origin').value;
     const dest = document.getElementById('select-destination').value;
@@ -10,14 +31,11 @@ function submitForm() {
         return;
     }
 
-    // Tampilkan container peta
     document.getElementById('home-screen').style.display = 'none';
     document.getElementById('app-container').style.display = 'flex';
 
-    // Inisialisasi peta jika belum ada
     initMap();
 
-    // Paksa Leaflet menghitung ulang ukuran layar & fokus langsung ke garis rute
     setTimeout(() => {
         if (map) {
             map.invalidateSize();
@@ -28,10 +46,8 @@ function submitForm() {
     }, 250);
 }
 
-// 2. Inisialisasi Peta Leaflet
 function initMap() {
     if (!map) {
-        // Default koordinat Jabodetabek dengan level zoom pas
         map = L.map('map').setView([-6.175392, 106.827153], 11);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -42,49 +58,48 @@ function initMap() {
     }
 }
 
-// 3. Update Data Bon BBM
 function applyBonData(km, liter, biaya) {
     document.getElementById('val-jarak').innerText = `${km} km`;
     document.getElementById('val-liter').innerText = `${liter} Liter`;
     document.getElementById('val-biaya').innerText = `Rp ${Number(biaya).toLocaleString('id-ID')}`;
 }
 
-// 4. Memuat GeoJSON & JSON
-function loadMapData() {
+async function loadMapData() {
     applyBonData(67.6, 12.6, 85499);
 
-    fetch('./assets/data/ringkasan.json')
-        .then(res => res.json())
-        .then(data => {
-            applyBonData(data.total_km || 67.6, data.total_liter || 12.6, data.total_biaya || 85499);
-        })
-        .catch(err => console.log("Gagal memuat ringkasan.json"));
+    // Load Ringkasan
+    try {
+        const data = await loadGeoJSON('ringkasan.json');
+        applyBonData(data.total_km || 67.6, data.total_liter || 12.6, data.total_biaya || 85499);
+    } catch (e) {
+        console.warn("Menggunakan fallback ringkasan.");
+    }
 
-    fetch('./assets/data/rute.geojson')
-        .then(res => res.json())
-        .then(data => {
-            ruteLayer = L.geoJSON(data, {
-                style: { color: '#1e88e5', weight: 5, opacity: 0.8 }
-            }).addTo(map);
+    try {
+        const data = await loadGeoJSON('rute.geojson');
+        ruteLayer = L.geoJSON(data, {
+            style: { color: '#1e88e5', weight: 5, opacity: 0.8 }
+        }).addTo(map);
 
-            // Fokuskan kamera peta ke seluruh jalur rute
-            map.fitBounds(ruteLayer.getBounds());
-        })
-        .catch(err => console.error("Gagal memuat rute.geojson:", err));
+        map.fitBounds(ruteLayer.getBounds());
+    } catch (e) {
+        console.error("Gagal load rute:", e);
+    }
 
-    fetch('./assets/data/titik_ujung.geojson')
-        .then(res => res.json())
-        .then(data => {
-            titikLayer = L.geoJSON(data, {
-                onEachFeature: function (feature, layer) {
-                    const props = feature.properties || {};
-                    const nama = props.nama_lokasi || props.nama || 'Titik Lokasi';
-                    const tipe = props.kategori || props.type || 'Point';
-                    layer.bindPopup(`<b>${nama}</b><br>Tipe: ${tipe}`);
-                }
-            }).addTo(map);
-        })
-        .catch(err => console.error("Gagal memuat titik_ujung.geojson:", err));
+    // Load Titik Marker
+    try {
+        const data = await loadGeoJSON('titik_ujung.geojson');
+        titikLayer = L.geoJSON(data, {
+            onEachFeature: function (feature, layer) {
+                const props = feature.properties || {};
+                const nama = props.nama_lokasi || props.nama || 'Titik Lokasi';
+                const tipe = props.kategori || props.type || 'Point';
+                layer.bindPopup(`<b>${nama}</b><br>Tipe: ${tipe}`);
+            }
+        }).addTo(map);
+    } catch (e) {
+        console.error("Gagal load titik_ujung:", e);
+    }
 }
 
 // 5. Kembali ke Form Awal
