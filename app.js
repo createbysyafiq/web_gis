@@ -53,14 +53,14 @@ function applyBonData(km, liter, biaya) {
 function loadMapData() {
     applyBonData(67.6, 12.6, 85499);
 
-    fetch('assets/data/ringkasan.json')
+    fetch('./assets/data/ringkasan.json')
         .then(res => res.json())
         .then(data => {
             applyBonData(data.total_km || 67.6, data.total_liter || 12.6, data.total_biaya || 85499);
         })
         .catch(err => console.log("Gagal memuat ringkasan.json"));
 
-    fetch('assets/data/rute.geojson')
+    fetch('./assets/data/rute.geojson')
         .then(res => res.json())
         .then(data => {
             ruteLayer = L.geoJSON(data, {
@@ -72,7 +72,7 @@ function loadMapData() {
         })
         .catch(err => console.error("Gagal memuat rute.geojson:", err));
 
-    fetch('assets/data/titik_ujung.geojson')
+    fetch('./assets/data/titik_ujung.geojson')
         .then(res => res.json())
         .then(data => {
             titikLayer = L.geoJSON(data, {
