@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EngkelRoute GIS - WebGIS Monitoring Truk Engkel</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <div id="home-screen">
+        <div class="home-card">
+            <h1>EngkelRoute GIS</h1>
+            <p class="subtitle">Sistem Perencanaan Rute & Simulasi Biaya Operasional Truk Engkel (CDE)</p>
+            <hr class="dashed">
+
+
+            <form id="route-form">
+                <div class="form-group">
+                    <label for="select-origin"><strong>Titik Awal (Origin):</strong></label>
+                    <select id="select-origin">
+                        <option value="">-- Pilih Titik Awal --</option>
+                        <option value="Tangerang" selected>Tangerang (Gudang Asal)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="select-destination"><strong>Titik Tujuan (Destination):</strong></label>
+                    <select id="select-destination">
+                        <option value="">-- Pilih Titik Tujuan --</option>
+                        <option value="Jakarta" selected>Tanjung Priok, Jakarta (Pelabuhan/Tujuan)</option>
+                    </select>
+                </div>
+
+                <button type="button" class="btn-submit" onclick="submitForm()">Tampilkan Rute & Hitung Bon BBM</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="app-container" style="display: none;">
+        <div id="sidebar">
+            <button class="btn-back" onclick="kembaliKeHome()">← Kembali ke Form</button>
+            <h2>EngkelRoute GIS</h2>
+            <p class="subtitle">Analisis Rute & Konsumsi BBM Truk Engkel (CDE)</p>
+            <hr>
+
+            <div class="panel">
+                <h3>Filter Tampilan Titik</h3>
+                <select id="filter-kategori" onchange="filterData()">
+                    <option value="all">Semua Titik (Awal & Akhir)</option>
+                    <option value="origin">Titik Awal (Origin)</option>
+                    <option value="destination">Titik Akhir (Destination)</option>
+                </select>
+            </div>
+
+            <div class="panel receipt-box">
+                <h3>Bon Resep Operasional BBM</h3>
+                <div class="receipt-item">
+                    <span>Kendaraan:</span> <strong>Truk Engkel (CDE)</strong>
+                </div>
+                <div class="receipt-item">
+                    <span>Efisiensi Mesin:</span> <strong>1 L / 8 km</strong>
+                </div>
+                <hr class="dashed">
+                <div class="receipt-item">
+                    <span>Total Jarak:</span> <strong id="val-jarak">0 km</strong>
+                </div>
+                <div class="receipt-item">
+                    <span>Total Solar Dimakan:</span> <strong id="val-liter">0 Liter</strong>
+                </div>
+                <div class="receipt-item highlight">
+                    <span>Total Biaya (Biosolar):</span> <strong id="val-biaya">Rp 0</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Container Peta Utama -->
+        <div id="map"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,19 @@
+{
+  "kode_kendaraan": "K-08",
+  "kendaraan": "Truk engkel",
+  "trayek": "Tangerang – Jakarta",
+  "jenis_bbm": "Biosolar",
+  "harga_per_liter": 6800,
+  "efisiensi_acuan": 6.5,
+  "jumlah_hari": 1,
+  "jumlah_trip": 2,
+  "total_km": 67.6,
+  "total_liter": 12.6,
+  "total_biaya": 85499,
+  "liter_idle": 0.1,
+  "liter_boros": 2.2,
+  "biaya_boros": 14763,
+  "catatan": "Data simulasi, bukan rekaman kendaraan sungguhan.",
+  "siang_trip": 2,
+  "siang_km_per_liter": 5.38
+}
