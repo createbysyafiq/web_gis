@@ -3,7 +3,7 @@
 WebGIS sederhana untuk visualisasi rute operasional dan simulasi biaya BBM Truk Engkel (CDE) rute Tangerang - Jakarta.
 
 ## Akses Proyek
-* **Live WebGIS**: https://webgis-truk-engkel.vercel.app
+* **Live WebGIS**: https://web-gis-five.vercel.app/
 * **Repository**: https://github.com/username/webgis-truk-engkel
 
 ---
