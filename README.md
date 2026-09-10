@@ -4,7 +4,7 @@ WebGIS sederhana untuk visualisasi rute operasional dan simulasi biaya BBM Truk 
 
 ## Akses Proyek
 * **Live WebGIS**: https://web-gis-five.vercel.app/
-* **Repository**: https://github.com/username/webgis-truk-engkel
+* **Repository**: https://github.com/createbysyafiq/web_gis
 
 ---
 
